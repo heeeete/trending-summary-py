@@ -5,9 +5,6 @@ import os
 
 app = Flask(__name__)
 
-# 환경 변수로 환경 구분 (개발/프로덕션)
-ENV = os.environ.get('FLASK_ENV', 'development')
-
 # CORS 설정
 # if ENV == 'production':
 #     # 프로덕션 환경: 특정 도메인만 허용
@@ -43,12 +40,6 @@ def get_trending():
             try:
                 # __dict__를 사용하여 객체의 모든 속성을 딕셔너리로 변환
                 trend_dict = trend.__dict__
-                # 또는 직접 필요한 속성만 추출
-                # trend_dict = {
-                #     "title": getattr(trend, "title", ""),
-                #     "query": getattr(trend, "query", ""),
-                #     # 다른 필요한 속성들...
-                # }
                 serializable_trends.append(trend_dict)
             except:
                 # 객체를 문자열로 변환하여 추가
@@ -79,4 +70,5 @@ def redirect_country(country):
     return get_trending()
 
 if __name__ == '__main__':
+    # 개발 환경에서는 디버그 모드 활성화
     app.run(debug=True)
