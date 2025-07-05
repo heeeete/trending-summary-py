@@ -6,13 +6,16 @@ import os
 app = Flask(__name__)
 
 # CORS 설정
-# if ENV == 'production':
-#     # 프로덕션 환경: 특정 도메인만 허용
-#     allowed_origins = os.environ.get('ALLOWED_ORIGINS', 'https://your-frontend-domain.com')
-#     CORS(app, resources={r"/*": {"origins": allowed_origins.split(',')}})
-# else:
-    # 개발 환경: 모든 요청 허용
-CORS(app, resources={r"/*": {"origins": "*"}})
+# 허용할 도메인 목록
+allowed_origins = [
+    'https://v0-modern-trending-summary.vercel.app',
+    'http://localhost:3000',  # 로컬 개발 환경
+    'http://localhost:3001',  # 로컬 개발 환경 (다른 포트)
+    'http://127.0.0.1:3000',  # 로컬 개발 환경
+    'http://127.0.0.1:3001',  # 로컬 개발 환경 (다른 포트)
+]
+
+CORS(app, resources={r"/*": {"origins": allowed_origins}})
 
 @app.route('/api/trending', methods=['GET'])
 def get_trending():
