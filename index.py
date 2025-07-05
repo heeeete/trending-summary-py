@@ -35,7 +35,7 @@ def get_trending():
 
         # TrendKeyword 객체를 딕셔너리로 변환
         serializable_trends = []
-        for trend in trends:
+        for trend in trends[:20]:  # 최대 20개로 제한
             # 객체의 속성을 딕셔너리로 변환
             try:
                 # __dict__를 사용하여 객체의 모든 속성을 딕셔너리로 변환
@@ -51,23 +51,27 @@ def get_trending():
             'trends': serializable_trends
         }
 
-        return jsonify(response)
+        # 캐시 방지 헤더 추가
+        resp = jsonify(response)
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.headers['Expires'] = '0'
+        return resp
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/', methods=['GET'])
 def index():
-    return jsonify({
+    # 캐시 방지 헤더 추가
+    resp = jsonify({
         'message': '트렌딩 API에 오신 것을 환영합니다',
         'endpoints': {
             'trending': '/api/trending?country=[kr|jp|us]'
         }
     })
+    return resp
 
-# 잘못된 URL 형식도 지원
-@app.route('/country=<country>', methods=['GET'])
-def redirect_country(country):
-    return get_trending()
+
 
 if __name__ == '__main__':
     # 개발 환경에서는 디버그 모드 활성화
